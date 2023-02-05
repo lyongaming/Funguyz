@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float movementSpeed = 50f;
-    public float jumpForce = 3f;
     Transform tr;
     Rigidbody rg;
-    // SpriteRenderer spriteRenderer;
-    // Sprite sprite;
+    Animator animator;
+
+    public float jumpForce = 3f;
+    public float movementSpeed = 50f;
     bool lookingLeft = false;
 
     public void Start()
     {
         tr = GetComponent<Transform>();
-        // spriteRenderer = GetComponent<SpriteRenderer>();
-        // sprite = Resources.Load<Sprite>("Sprites Hollow Knight");
-        // spriteRenderer.sprite = sprite;
         rg = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -39,35 +37,44 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        /* if(Input.GetKey(KeyCode.RightArrow))
+        if(Input.GetKey(KeyCode.RightArrow))
         {
             Vector3 move = new Vector3(movementSpeed, 0, 0);
             rg.AddForce(move);
+            if (lookingLeft)
+            {
+                tr.Rotate(new Vector3(0, 180, 0));
+                lookingLeft = false;
+            }
+            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
         }
         if (Input.GetKey(KeyCode.LeftArrow))
             {
             Vector3 move = new Vector3(-movementSpeed, 0, 0);
             rg.AddForce(move);
+            if (!lookingLeft)
+            {
+                tr.Rotate(new Vector3(0, 180, 0));
+                lookingLeft = true;
+            }
+            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
             Vector3 move = new Vector3(0, 0, movementSpeed);
             rg.AddForce(move);
+            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
             Vector3 move = new Vector3(0, 0, -movementSpeed);
             rg.AddForce(move);
-        } */
-        if(Input.GetKeyDown(KeyCode.LeftArrow) && !lookingLeft)
-        {
-            tr.Rotate(new Vector3(0, 180, 0));
-            lookingLeft = true;
+            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
         }
-        if(Input.GetKeyDown(KeyCode.RightArrow) && lookingLeft)
+        if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
         {
-            tr.Rotate(new Vector3(0, 180, 0));
-            lookingLeft= false;
+            rg.AddForce(new Vector3(0, 0, 0));
+            animator.SetFloat("Horizontal", 0);
         }
     }
 }
