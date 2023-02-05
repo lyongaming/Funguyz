@@ -33,56 +33,74 @@ public class Player : MonoBehaviour
         {
             Vector3 force = new Vector3(0, jumpForce, 0);
             rg.AddForce(force, ForceMode.Impulse);
+            animator.SetBool("hasJump", true);
+            Invoke("FromJumpToIdle", 1.3f);
         }
+    }
+
+    private void FromJumpToIdle()
+    {
+        animator.SetBool("hasJump", false);
     }
 
     private void Move()
     {
-        if(Input.GetKey(KeyCode.RightArrow))
+        Attacks();
+        if (Input.GetKey(KeyCode.D))
         {
             Vector3 move = new Vector3(movementSpeed, 0, 0);
             rg.AddForce(move);
-            
+
             if (lookingLeft)
             {
                 tr.Rotate(new Vector3(0, 180, 0));
                 lookingLeft = false;
             }
-            
-            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
+
+            animator.CrossFade("Player_walk", .001f);
         }
-        if (Input.GetKey(KeyCode.LeftArrow))
-            {
+        if (Input.GetKey(KeyCode.A))
+        {
             Vector3 move = new Vector3(-movementSpeed, 0, 0);
             rg.AddForce(move);
-            
+
             if (!lookingLeft)
             {
                 tr.Rotate(new Vector3(0, 180, 0));
                 lookingLeft = true;
             }
-            
-            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
+
+            animator.CrossFade("Player_walk", 0.001f);
         }
         {
             rg.velocity = new Vector3(0, rg.velocity.y, 0);
         }
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
         {
             Vector3 move = new Vector3(0, 0, movementSpeed);
             rg.AddForce(move);
-            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
+            animator.CrossFade("Player_walk", 0.001f);
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
         {
             Vector3 move = new Vector3(0, 0, -movementSpeed);
             rg.AddForce(move);
-            animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
+            animator.CrossFade("Player_walk", 0.001f);
+
         }
-        if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
+        if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
         {
             rg.AddForce(new Vector3(0, 0, 0));
-            animator.SetFloat("Horizontal", 0);
+            animator.Play("Player_stop", 0, 0f);
+            animator.Play("Player_idle", 0, 1f);
+        }
+    }
+
+    private void Attacks()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            animator.CrossFade("Player_attack", 0.001f);
         }
     }
 }
