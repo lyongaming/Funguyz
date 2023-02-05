@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -41,23 +42,30 @@ public class Player : MonoBehaviour
         {
             Vector3 move = new Vector3(movementSpeed, 0, 0);
             rg.AddForce(move);
+            
             if (lookingLeft)
             {
                 tr.Rotate(new Vector3(0, 180, 0));
                 lookingLeft = false;
             }
+            
             animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
         }
         if (Input.GetKey(KeyCode.LeftArrow))
             {
             Vector3 move = new Vector3(-movementSpeed, 0, 0);
             rg.AddForce(move);
+            
             if (!lookingLeft)
             {
                 tr.Rotate(new Vector3(0, 180, 0));
                 lookingLeft = true;
             }
+            
             animator.SetFloat("Horizontal", Mathf.Abs(movementSpeed));
+        }
+        {
+            rg.velocity = new Vector3(0, rg.velocity.y, 0);
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
